@@ -1,17 +1,23 @@
-import * as React from 'react';
-import { TextInput, View, Text, StyleSheet, Pressable} from 'react-native';
+import React, {useState} from 'react';
+import { TextInput, View, Text, StyleSheet, Pressable, Alert} from 'react-native';
 
 const Onboarding = () => {
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
     return (
         <>
         <View style={styles.container}>
             <Text style={styles.textInput}>First Name</Text>
-            <TextInput style={styles.userInput}/>
+            <TextInput style={styles.userInput} 
+            value={name} 
+            onChangeText={setName}/>
             <Text style={styles.textInput}>Email</Text>
-            <TextInput style={styles.userInput}/>
+            <TextInput style={styles.userInput}
+            value={email}
+            onChangeText={setEmail}/>
         </View>
         <View style={styles.bottom}>
-            <Pressable style={styles.nextButton}>
+            <Pressable style={styles.nextButton} onPressIn={() => validateInfos(name, email)} >
                 <Text style={styles.nextButtonText}>Next</Text>
             </Pressable>
         </View>
@@ -19,6 +25,14 @@ const Onboarding = () => {
     );
 }
 
+function validateInfos(name, email){
+    const validate = /\d/;
+    if(name == "" || email == ""){
+        return Alert.alert("Please, fullfill all the fields.");
+    } else if (validate.test(name)){
+        return Alert.alert(`The 'First Name' field can only contain letters`)
+    }
+}
 const styles = StyleSheet.create({
     container: {
         flex:0.80,
