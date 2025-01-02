@@ -1,12 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import Onboarding from './Screens/Onboarding';
+import { NavigationContainer } from '@react-navigation/native';
+import RootNavigator from './navigator/RootNavigator';
+
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Onboarding/>
-    </View>
+    <NavigationContainer>
+      <RootNavigator/>
+    </NavigationContainer>
   );
 }
 
