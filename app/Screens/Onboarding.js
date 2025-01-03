@@ -1,9 +1,13 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { TextInput, View, Text, StyleSheet, Pressable, Alert} from 'react-native';
+import { armazenar } from '../Database';
 
 const Onboarding = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
+    useEffect(() => {
+        
+    })
     return (
         <>
         <View style={styles.container}>
@@ -17,7 +21,7 @@ const Onboarding = () => {
             onChangeText={setEmail}/>
         </View>
         <View style={styles.bottom}>
-            <Pressable style={styles.nextButton} onPressIn={() => validateInfos(name, email)} >
+            <Pressable style={styles.nextButton} onPress={() => validateInfos(name, email)} >
                 <Text style={styles.nextButtonText}>Next</Text>
             </Pressable>
         </View>
@@ -31,6 +35,8 @@ function validateInfos(name, email){
         return Alert.alert("Please, fullfill all the fields.");
     } else if (validate.test(name)){
         return Alert.alert(`The 'First Name' field can only contain letters`)
+    } else {
+        armazenar('login','true')
     }
 }
 const styles = StyleSheet.create({
