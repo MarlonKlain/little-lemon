@@ -7,7 +7,17 @@ const Profile = () =>{
     const {changeLogin} = useContext(LoginContext)
     return(
         <View>
-            <Text>Profile page</Text>
+            <View>
+            <Text>Personal information</Text>
+            <Text>Avatar</Text>
+            <Text>Foto</Text>
+            <Pressable>
+                <Text>Change</Text>
+            </Pressable>
+            <Pressable>
+                <Text>Remove</Text>
+            </Pressable>
+            </View>
             <Pressable style={styles.logOutButton} onPress={() => {armazenar('login', 'false'), changeLogin(false)}}>
                 <Text style={styles.logOutButtonText}>
                     Log out
