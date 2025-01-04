@@ -1,8 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export async function armazenar (chave, valor){
+export function armazenar (chave, valor){
     try {
-        await AsyncStorage.setItem(chave, valor);
+        AsyncStorage.setItem(chave, valor);
   } catch (e) {
     console.log("erro ao armazenar", e)
   }

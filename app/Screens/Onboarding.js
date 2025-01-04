@@ -1,13 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import { TextInput, View, Text, StyleSheet, Pressable, Alert} from 'react-native';
 import { armazenar } from '../Database';
+import { LoginContext } from '../context/loginContext';
 
 const Onboarding = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    useEffect(() => {
-        
-    })
+    const {changeLogin} = useContext(LoginContext)
+
     return (
         <>
         <View style={styles.container}>
@@ -21,7 +21,7 @@ const Onboarding = () => {
             onChangeText={setEmail}/>
         </View>
         <View style={styles.bottom}>
-            <Pressable style={styles.nextButton} onPress={() => validateInfos(name, email)} >
+            <Pressable style={styles.nextButton} onPress={() => validateInfos(name, email) ? changeLogin(true): Alert.alert("ERRO")} >
                 <Text style={styles.nextButtonText}>Next</Text>
             </Pressable>
         </View>
@@ -32,11 +32,16 @@ const Onboarding = () => {
 function validateInfos(name, email){
     const validate = /\d/;
     if(name == "" || email == ""){
-        return Alert.alert("Please, fullfill all the fields.");
+        Alert.alert("Please, fullfill all the fields.");
+        return false
+        
     } else if (validate.test(name)){
-        return Alert.alert(`The 'First Name' field can only contain letters`)
+        Alert.alert(`The 'First Name' field can only contain letters`)
+        return false
     } else {
         armazenar('login','true')
+        return true
+        
     }
 }
 const styles = StyleSheet.create({

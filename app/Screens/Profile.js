@@ -1,11 +1,14 @@
 import {View, Text, Pressable, StyleSheet} from 'react-native';
 import { armazenar } from '../Database';
+import { useState, useContext } from 'react';
+import { LoginContext } from '../context/loginContext';
 
 const Profile = () =>{
+    const {changeLogin} = useContext(LoginContext)
     return(
         <View>
             <Text>Profile page</Text>
-            <Pressable style={styles.logOutButton} onPress={() => armazenar('login', 'false')}>
+            <Pressable style={styles.logOutButton} onPress={() => {armazenar('login', 'false'), changeLogin(false)}}>
                 <Text style={styles.logOutButtonText}>
                     Log out
                 </Text>
@@ -13,6 +16,7 @@ const Profile = () =>{
         </View>
     );
 }
+
 const styles = StyleSheet.create({
     logOutButton:{
         backgroundColor:"#CBD2D9",
