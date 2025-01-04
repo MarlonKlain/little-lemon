@@ -2,9 +2,10 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Onboarding from '../Screens/Onboarding';
 import Profile from '../Screens/Profile';
 import {buscar } from '../Database';
-import {StyleSheet, Image, Alert} from "react-native";
-import { useEffect, useState, useContext, createContext} from 'react';
+import {StyleSheet, Image, } from "react-native";
+import { useEffect, useContext} from 'react';
 import { LoginContext } from '../context/loginContext';
+import Splashscreen from '../Screens/Splashscreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -24,7 +25,11 @@ const RootNavigator = () => {
     }); // Apenas uma execução inicial
 
     if (login === null) {
-        return null; // Tela de carregamento ou retorno vazio enquanto o estado é carregado
+        return (
+            <Stack.Navigator>
+                <Stack.Screen name="Splashscreen" component={Splashscreen}/>
+            </Stack.Navigator>
+        ); // Tela de carregamento ou retorno vazio enquanto o estado é carregado
     }
 
     return (

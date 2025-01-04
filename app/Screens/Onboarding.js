@@ -21,7 +21,7 @@ const Onboarding = () => {
             onChangeText={setEmail}/>
         </View>
         <View style={styles.bottom}>
-            <Pressable style={styles.nextButton} onPress={() => validateInfos(name, email) ? changeLogin(true): Alert.alert("ERRO")} >
+            <Pressable style={styles.nextButton} onPress={() => validateInfos(name, email) ? changeLogin(true): false} >
                 <Text style={styles.nextButtonText}>Next</Text>
             </Pressable>
         </View>
