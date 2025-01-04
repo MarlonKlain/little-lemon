@@ -1,14 +1,25 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import RootNavigator from './navigator/RootNavigator';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import LoginProvider from './context/loginContext';
 
+
+const Stack = createNativeStackNavigator();
+
+function LogoTitle() {
+    return (
+      <Image source={require("./assets/Logo.png")}/>
+    );
+  }
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <RootNavigator/>
-    </NavigationContainer>
+  <NavigationContainer>
+    <LoginProvider>
+      <RootNavigator />
+    </LoginProvider>
+  </NavigationContainer>
   );
 }
 
