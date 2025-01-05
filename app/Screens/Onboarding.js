@@ -1,12 +1,12 @@
 import React, {useEffect, useState, useContext} from 'react';
 import { TextInput, View, Text, StyleSheet, Pressable, Alert} from 'react-native';
 import { armazenar } from '../Database';
-import { LoginContext } from '../context/loginContext';
+import { UserContext } from '../context/userContext';
 
 const Onboarding = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    const {changeLogin} = useContext(LoginContext)
+    const {changeLogin} = useContext(UserContext)
 
     return (
         <>
