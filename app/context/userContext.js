@@ -5,9 +5,9 @@ export const UserContext = createContext({});
 function UserProvider({children}){
     const [user, setUser] = useState({
         login: null,
-        firstName: "",
-        lastName: "",
-        email: "",
+        firstName: null,
+        lastName: null,
+        email: null,
         phoneNumber: undefined
     })
 

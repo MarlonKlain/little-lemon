@@ -30,6 +30,7 @@ const Onboarding = () => {
 }
 
 function validateInfos(name, email){
+    
     const validate = /\d/;
     if(name == "" || email == ""){
         Alert.alert("Please, fullfill all the fields.");

@@ -7,7 +7,6 @@ export function armazenar (chave, valor){
     console.log("erro ao armazenar", e)
   }
 }
-
 export async function buscar (chave) {
     try {
         const value = await AsyncStorage.getItem(chave);
