@@ -1,11 +1,11 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Onboarding from '../Screens/Onboarding';
 import Profile from '../Screens/Profile';
-import {buscar } from '../Database';
-import {StyleSheet, Image, } from "react-native";
-import { useEffect, useContext} from 'react';
-import { LoginContext } from '../context/loginContext';
+import Onboarding from '../Screens/Onboarding';
 import Splashscreen from '../Screens/Splashscreen';
+import { buscar } from '../Database';
+import { UserContext } from '../context/userContext';
+import { StyleSheet, Image, } from "react-native";
+import { useEffect, useContext} from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,15 +16,14 @@ function LogoTitle() {
   }
 
 const RootNavigator = () => {
-    const {login, changeLogin} = useContext(LoginContext)
-    // const [login, setLogin] = useState(null); // Inicializado como null
+    const {user, changeLogin} = useContext(UserContext)
     useEffect(() => {
         buscar('login')
             .then(res => changeLogin(res ? JSON.parse(res) : false)) // Corrige o estado inicial
             .catch(err => console.error("Erro ao buscar login:", err));
     }); // Apenas uma execução inicial
 
-    if (login === null) {
+    if (user.login === null) {
         return (
             <Stack.Navigator>
                 <Stack.Screen name="Splashscreen" component={Splashscreen}/>
@@ -34,7 +33,7 @@ const RootNavigator = () => {
 
     return (
         <Stack.Navigator>
-            {login ? (
+            {user.login ? (
                 <Stack.Screen name="Profile" component={Profile} />
             ) : (
                 <Stack.Screen

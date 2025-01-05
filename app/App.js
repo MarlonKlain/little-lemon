@@ -2,7 +2,7 @@ import { Image, StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import RootNavigator from './navigator/RootNavigator';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import LoginProvider from './context/loginContext';
+import UserContext from './context/userContext';
 
 
 const Stack = createNativeStackNavigator();
@@ -16,9 +16,9 @@ function LogoTitle() {
 export default function App() {
   return (
   <NavigationContainer>
-    <LoginProvider>
+    <UserContext>
       <RootNavigator />
-    </LoginProvider>
+    </UserContext>
   </NavigationContainer>
   );
 }
