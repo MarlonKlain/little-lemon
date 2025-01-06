@@ -4,8 +4,9 @@ import Splashscreen from '../Screens/Splashscreen';
 import { buscar } from '../Database';
 import { UserContext } from '../context/userContext';
 import { StyleSheet, Image, } from "react-native";
-import { useEffect, useContext} from 'react';
+import { useEffect, useContext, useReducer} from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { userReducer } from '../context/userContext';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,14 +17,14 @@ function LogoTitle() {
   }
 
 const RootNavigator = () => {
-    const {user, changeLogin} = useContext(UserContext)
+    const login = false;
     useEffect(() => {
-        buscar('login')
-            .then(res => changeLogin(res ? JSON.parse(res) : false)) // Corrige o estado inicial
-            .catch(err => console.error("Erro ao buscar login:", err));
+        // buscar('login')
+        //     .then(res => changeLogin(res ? JSON.parse(res) : false)) // Corrige o estado inicial
+        //     .catch(err => console.error("Erro ao buscar login:", err));
     }); // Apenas uma execução inicial
 
-    if (user.login === null) {
+    if (login === null) {
         return (
             <Stack.Navigator>
                 <Stack.Screen name="Splashscreen" component={Splashscreen}/>
@@ -33,7 +34,7 @@ const RootNavigator = () => {
 
     return (
         <Stack.Navigator>
-            {user.login ? (
+            {login ? (
                 <Stack.Screen name="Profile" component={Profile} />
             ) : (
                 <Stack.Screen
