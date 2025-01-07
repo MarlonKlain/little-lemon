@@ -2,74 +2,68 @@ import React, { createContext, useState, useReducer} from "react";
 
 export const UserContext = createContext({});
 
-const ACTIONS = {
-        UPDATE_LOGIN:'update-login',
-        UPDATE_FIRSTNAME:'update-first-name',
-        UPDATE_LASTNAME:'update-last-name',
-        UPDATE_EMAIL:'update-email',
-        UPDATE_PHONENUMBER:'update-phone-number',
+const initializeState = {
+        login: false,
+        firstName: null,
+        lastName: null,
+        email: null,
+        phoneNumber: undefined
 }
 export function userReducer (oldUserInfo, action){
     switch(action.type){
-        case UPDATE_LOGIN:{
-            return {...userInfo, login: !oldUserInfo.login}
+        case 'update-login':{
+            return console.log(oldUserInfo)
         }
-        case UPDATE_FIRSTNAME:{
+        case 'update-first-name':{
 
         }
-        case UPDATE_LASTNAME:{
+        case 'update-last-name':{
 
         }
-        case UPDATE_EMAIL:{
+        case 'update-email':{
 
         }
-        case UPDATE_PHONENUMBER:{
+        case 'update-phone-number':{
 
         }
     }
 }
 
 function UserProvider({children}){
-    const [userInfo, dispatch] = useReducer(userReducer, {
-        login: false,
-        firstName: null,
-        lastName: null,
-        email: null,
-        phoneNumber: undefined
-    })
+    const [userInfo, dispatch] = useReducer(userReducer, initializeState)
 
-    function changeLogin (vale){
+    function changeLogin (){
         dispatch({
-            type: UPDATE_LOGIN,
+            type: 'update-login', 
         });
     }
     
-    function changeFirstName (value){
-        setUser({
-            firstName: value,
+    function changeLogin (){
+        dispatch({
+            type: 'update-first-name', 
+        });
+    }
+    
+    function changeLogin (){
+        dispatch({
+            type: 'update-last-name', 
         });
     }
 
-    function changeLastName (value){
-        setUser({
-            lastName: value,
+    function changeLogin (){
+        dispatch({
+            type: 'update-email', 
         });
     }
 
-    function changeEmail (value){
-        setUser({
-            email: value,
-        });
-    }
-
-    function changePhoneNumber (value){
-        setUser({
-            phoneNumber: value,
+    function changeLogin (){
+        dispatch({
+            type: 'update-phone-number', 
         });
     }
 
     return(
-        <UserContext.Provider value={{userInfo, userReducer}}>
+        <UserContext.Provider value={{userInfo, dispatch, changeLogin}}>
             {children}
         </UserContext.Provider>
     )
