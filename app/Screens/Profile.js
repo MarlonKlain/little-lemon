@@ -9,7 +9,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 const Profile = () =>{
-    const {user, changeLogin} = useContext(UserContext)
+    const {oldState, changeLogin} = useContext(UserContext)
     const [cbOrderStatus, setOrderStatus] = useState(false)
     const [cbPasswordChanges, setPasswordChanges] = useState(false)
     const [cbSpecialOffers, setSpecialOffers] = useState(false)
@@ -64,11 +64,11 @@ const Profile = () =>{
             {/* Middle content */}
             <View style={styles.middleContent}>
                 <Text style={styles.inputText}>First name</Text>
-                <TextInput style={styles.userInput}></TextInput>
+                <TextInput style={styles.userInput} value={oldState.firstName} editable={false}></TextInput>
                 <Text style={styles.inputText}>Last name</Text>
                 <TextInput style={styles.userInput}></TextInput>
                 <Text style={styles.inputText}>Email</Text>
-                <TextInput style={styles.userInput}></TextInput>
+                <TextInput style={styles.userInput} value={oldState.email} editable={false}></TextInput>
                 <Text style={styles.inputText}>Phone</Text>
                 <MaskedTextInput
                     mask='(999) 999-999'
@@ -111,7 +111,7 @@ const Profile = () =>{
                 />
                 <Text style={styles.notificationsText}>Newsletter</Text>
             </View>
-            <Pressable style={styles.logOutButton} onPress={() => {armazenar('login', 'false'), changeLogin(false)}}>
+            <Pressable style={styles.logOutButton} onPress={() => {armazenar('login', 'false'), changeLogin()}}>
                 <Text style={styles.logOutButtonText}>
                     Log out
                 </Text>
