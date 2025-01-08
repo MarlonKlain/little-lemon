@@ -1,12 +1,12 @@
 import React, {useEffect, useState, useContext} from 'react';
 import { TextInput, View, Text, StyleSheet, Pressable, Alert} from 'react-native';
 import { armazenar } from '../Database';
-import { UserContext, userReducer} from '../context/userContext';
+import { UserContext} from '../context/userContext';
 
 const Onboarding = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    const {userInfo, dispatch, changeLogin} = useContext(UserContext)
+    const {changeLogin, changeFirstName, changeEmail} = useContext(UserContext)
 
     function validateInfos(name, email){
     
@@ -21,6 +21,8 @@ const Onboarding = () => {
         } else {
             armazenar('login','true')
             changeLogin()
+            changeFirstName(name)
+            changeEmail(email)
             return true
             
         }
