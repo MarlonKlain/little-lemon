@@ -25,7 +25,10 @@ const initializeState = {
                 }
             }
             case 'update-last-name':{
-                return
+                return {
+                    ...oldState,
+                    lastName: action.payload.lastName
+                }
             }
             case 'update-email':{
                 return {
@@ -34,7 +37,10 @@ const initializeState = {
                 }
             }
             case 'update-phone-number':{
-
+                return {
+                    ...oldState,
+                    phone: action.payload.phone
+                }
             }
         }
 }
@@ -54,9 +60,9 @@ function UserProvider({children}){
         });
     }
     
-    function changeLastName (){
+    function changeLastName (lastName){
         dispatch({
-            type: 'update-last-name', 
+            type: 'update-last-name', payload: {lastName}
         });
     }
 
@@ -66,14 +72,14 @@ function UserProvider({children}){
         });
     }
 
-    function changePhone (){
+    function changePhone (phone){
         dispatch({
-            type: 'update-phone-number', 
+            type: 'update-phone-number', payload: {phone}
         });
     }
 
     return(
-        <UserContext.Provider value={{oldState, changeLogin, changeFirstName, changeEmail}}>
+        <UserContext.Provider value={{oldState, changeLogin, changeFirstName, changeEmail, changeLastName, changePhone}}>
             {children}
         </UserContext.Provider>
     )

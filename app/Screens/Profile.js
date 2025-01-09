@@ -1,21 +1,21 @@
 import {View, Text, Pressable, StyleSheet, TextInput, Image, ScrollView} from 'react-native';
-import { armazenar } from '../Database';
+import { armazenar, storeData, getData } from '../Database';
 import { useState, useContext } from 'react';
 import { UserContext } from '../context/userContext';
 import Checkbox from 'expo-checkbox';
 import { MaskedTextInput } from 'react-native-mask-text';
 import * as ImagePicker from 'expo-image-picker';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
 
 const Profile = () =>{
-    const {oldState, changeLogin} = useContext(UserContext)
+    const {oldState, changeLogin, changeLastName, changePhone} = useContext(UserContext)
     const [cbOrderStatus, setOrderStatus] = useState(false)
     const [cbPasswordChanges, setPasswordChanges] = useState(false)
     const [cbSpecialOffers, setSpecialOffers] = useState(false)
     const [cbNewsletter, setNewsletter] = useState(false)
     const [phone, setPhone] = useState('')
     const [image, setImage] = useState(null)
+    const [lastName, setLastName] = useState('')
+    const [profilePicLetter , setProfilePicLetter] = useState(oldState.firstName.charAt(0))
 
     async function handleImagePicker() {
         const result = await ImagePicker.launchImageLibraryAsync ({
@@ -38,6 +38,14 @@ const Profile = () =>{
         }
     }
 
+    const validateInfo = (argLastName, argPhone) => {
+        if ( argLastName != null && argPhone != null){
+            changeLastName(argLastName)
+            changePhone(argPhone)
+            return storeData(oldState)
+        }
+    }
+
     return(
         // Biggest container
         <ScrollView style={styles.container}>
@@ -48,7 +56,7 @@ const Profile = () =>{
                 {verifyImage() ? (
                 <Image style={styles.userPhoto} source={{uri:image}} />
                 ) : (
-                    <Text style={styles.noPhoto}>MK</Text>
+                    <Text style={styles.noPhoto}>{profilePicLetter.concat(lastName.charAt(0))}</Text>
                 )}
                 <Pressable
                     onPress={() => handleImagePicker()}
@@ -66,7 +74,7 @@ const Profile = () =>{
                 <Text style={styles.inputText}>First name</Text>
                 <TextInput style={styles.userInput} value={oldState.firstName} editable={false}></TextInput>
                 <Text style={styles.inputText}>Last name</Text>
-                <TextInput style={styles.userInput}></TextInput>
+                <TextInput style={styles.userInput} value={lastName} onChangeText={setLastName}></TextInput>
                 <Text style={styles.inputText}>Email</Text>
                 <TextInput style={styles.userInput} value={oldState.email} editable={false}></TextInput>
                 <Text style={styles.inputText}>Phone</Text>
@@ -111,17 +119,17 @@ const Profile = () =>{
                 />
                 <Text style={styles.notificationsText}>Newsletter</Text>
             </View>
-            <Pressable style={styles.logOutButton} onPress={() => {armazenar('login', 'false'), changeLogin()}}>
+            <Pressable style={styles.logOutButton} onPress={() => changeLogin()}>
                 <Text style={styles.logOutButtonText}>
                     Log out
                 </Text>
             </Pressable>
             <View style={styles.bottom}>
                 <Pressable style={styles.discardButton}>
-                    <Text style={styles.discardButtonText}>Discard changes</Text>
+                    <Text style={styles.discardButtonText} onPress={() => getData(oldState.email)}>Discard changes</Text>
                 </Pressable>
                 <Pressable style={styles.saveButton}>
-                    <Text style={styles.saveButtonText}>Save changes</Text>
+                    <Text style={styles.saveButtonText} onPress={() => validateInfo(lastName, phone)}>Save changes</Text>
                 </Pressable>
             </View>
         </ScrollView>
