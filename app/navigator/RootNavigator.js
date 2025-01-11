@@ -1,10 +1,10 @@
 import Profile from '../Screens/Profile';
 import Onboarding from '../Screens/Onboarding';
 import Splashscreen from '../Screens/Splashscreen';
-import { buscar } from '../Database';
+import { getData, mergeData } from '../Database';
 import { UserContext } from '../context/userContext';
 import { StyleSheet, Image, } from "react-native";
-import { useEffect, useContext, useReducer} from 'react';
+import { useEffect, useContext} from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const Stack = createNativeStackNavigator();
@@ -16,12 +16,12 @@ function LogoTitle() {
   }
 
 const RootNavigator = () => {
-    const {oldState} = useContext(UserContext)
+    const {oldState, changeLogin} = useContext(UserContext)
     useEffect(() => {
-        // buscar('login')
-        //     .then(res => changeLogin(res ? JSON.parse(res) : false)) // Corrige o estado inicial
-        //     .catch(err => console.error("Erro ao buscar login:", err));
-    }); // Apenas uma execução inicial
+        getData()
+            .then(res => changeLogin(res ? JSON.parse(res) : false)) // Corrige o estado inicial
+            .catch(err => console.error("Erro ao buscar login:", err));
+    }, []); // Apenas uma execução inicial
 
     if (oldState.login === null) {
         return (

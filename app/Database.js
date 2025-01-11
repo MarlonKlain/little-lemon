@@ -1,40 +1,39 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export function armazenar (key, value){
-    try {
-        AsyncStorage.setItem(key, value);
-  } catch (e) {
-    console.log("erro ao armazenar", e)
-  }
-}
-export async function buscar (key) {
-    try {
-        const value = await AsyncStorage.getItem(key);
-        if (value !== null) {
-          return value;
-        }
-      } catch (e) {
-        console.log("Erro ao buscar");
-    }
-    
-}
-
 export async function storeData (value) {
   try {
-    const stringifyJsonValue = JSON.stringify(value)
-    const stringifyKey = JSON.stringify(value.email)
-    await AsyncStorage.setItem(stringifyKey, stringifyJsonValue);
+    const stringifyObject = JSON.stringify(value)
+    await AsyncStorage.setItem("User", stringifyObject);
   } catch (e) {
     console.log(e)
   }
 };
 
-export async function getData (key) {
+export async function getData () {
   try {
-    const stringifyKey = JSON.stringify(key)
-    const jsonValue = await AsyncStorage.getItem(stringifyKey);
-    return console.log(jsonValue != null ? JSON.parse(jsonValue) : null);
+    const jsonValue = await AsyncStorage.getItem("User");
+    jsonValue != null ? JSON.parse(jsonValue) : null;
+    return jsonValue
+    
   } catch (e) {
     // error reading value
   }
 };
+
+export async function mergeData(value) {
+  try{
+    await AsyncStorage.mergeItem("User", JSON.stringify(value))
+  } catch (e){
+
+  }
+}
+
+export async function clearAll (){
+  try {
+    await AsyncStorage.clear()
+  } catch(e) {
+    // clear error
+  }
+
+  console.log('Local storage cleared.')
+}
