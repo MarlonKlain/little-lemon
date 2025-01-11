@@ -1,12 +1,12 @@
 import React, {useEffect, useState, useContext} from 'react';
 import { TextInput, View, Text, StyleSheet, Pressable, Alert} from 'react-native';
-import { armazenar } from '../Database';
+import { getData, mergeData, clearAll, storeData } from '../Database';
 import { UserContext} from '../context/userContext';
 
 const Onboarding = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    const {changeLogin, changeFirstName, changeEmail} = useContext(UserContext)
+    const {oldState, changeLogin, changeFirstName, changeEmail} = useContext(UserContext)
 
     function validateInfos(name, email){
     
@@ -19,8 +19,20 @@ const Onboarding = () => {
             Alert.alert(`The 'First Name' field can only contain letters`)
             return false
         } else {
-            armazenar('login','true')
-            changeLogin()
+            const createObject = (argName, argEmail, argLogin, argLastName, argPhone, argCbOrderStatus, argCbPasswordChanges, argCbSpecialOffers, argCbNewsletter ) => ({
+                firstName: argName,
+                email: argEmail,
+                login: argLogin,
+                lastName: argLastName,
+                phone: argPhone,
+                bdCbOrderStatus: argCbOrderStatus,
+                bdCbPasswordChanges: argCbPasswordChanges,
+                bdCbSpecialOffers: argCbSpecialOffers,
+                bdCbNewsletter: argCbNewsletter,
+            });
+            const loginObject = createObject(name, email, true)
+            storeData(loginObject)
+            changeLogin(true)
             changeFirstName(name)
             changeEmail(email)
             return true

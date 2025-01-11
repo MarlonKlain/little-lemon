@@ -1,13 +1,13 @@
 import {View, Text, Pressable, StyleSheet, TextInput, Image, ScrollView} from 'react-native';
-import { armazenar, storeData, getData } from '../Database';
-import { useState, useContext } from 'react';
+import { storeData, clearAll, getData, mergeData} from '../Database';
+import { useState, useContext, useEffect } from 'react';
 import { UserContext } from '../context/userContext';
 import Checkbox from 'expo-checkbox';
 import { MaskedTextInput } from 'react-native-mask-text';
 import * as ImagePicker from 'expo-image-picker';
 
 const Profile = () =>{
-    const {oldState, changeLogin, changeLastName, changePhone} = useContext(UserContext)
+    const {oldState, changeLogin, changeFirstName, changeLastName, changePhone, changeEmail} = useContext(UserContext)
     const [cbOrderStatus, setOrderStatus] = useState(false)
     const [cbPasswordChanges, setPasswordChanges] = useState(false)
     const [cbSpecialOffers, setSpecialOffers] = useState(false)
@@ -15,8 +15,17 @@ const Profile = () =>{
     const [phone, setPhone] = useState('')
     const [image, setImage] = useState(null)
     const [lastName, setLastName] = useState('')
-    const [profilePicLetter , setProfilePicLetter] = useState(oldState.firstName.charAt(0))
+    const [profilePicLetter , setProfilePicLetter] = useState()
+    const [userObject, setUserObject] = useState({})
 
+    function teste () {
+        if(oldState.firstName == null){
+            console.log("Vazio");
+        } else {
+            console.log("Não vazio")
+        }
+    }
+    
     async function handleImagePicker() {
         const result = await ImagePicker.launchImageLibraryAsync ({
             aspect:[4,4],
@@ -30,6 +39,14 @@ const Profile = () =>{
         }
     }
 
+    function verifyLastName () {
+        if (lastName != null) {
+            return lastName.charAt(0)
+        } else {
+            return ""
+        }
+    }
+
     const verifyImage = () => {
         if(image == null){
             return false
@@ -38,14 +55,43 @@ const Profile = () =>{
         }
     }
 
-    const validateInfo = (argLastName, argPhone) => {
+    const validateInfo = (argProfilePic, argName, argEmail, argLogin, argLastName, argPhone, argCbOrderStatus, argCbPasswordChanges, argCbSpecialOffers, argCbNewsletter ) => {
         if ( argLastName != null && argPhone != null){
-            changeLastName(argLastName)
-            changePhone(argPhone)
-            return storeData(oldState)
+            storeData({
+                    profilePicture: argProfilePic,
+                    firstName: argName,
+                    email: argEmail,
+                    login: argLogin,
+                    lastName: argLastName,
+                    phone: argPhone,
+                    bdCbOrderStatus: argCbOrderStatus,
+                    bdCbPasswordChanges: argCbPasswordChanges,
+                    bdCbSpecialOffers: argCbSpecialOffers,
+                    bdCbNewsletter: argCbNewsletter
+            })
+            console.log("Informações salvas com sucesso!")
         }
     }
 
+    useEffect(() => {
+            getData()
+                .then(function (res) {
+                    setUserObject(JSON.parse(res))
+                    const objectTest = JSON.parse(res)
+                    changeFirstName(objectTest.firstName)
+                    setLastName(objectTest.lastName)
+                    changeEmail(objectTest.email)
+                    setPhone(objectTest.phone)
+                    setOrderStatus(objectTest.bdCbOrderStatus)
+                    setPasswordChanges(objectTest.bdCbPasswordChanges)
+                    setSpecialOffers(objectTest.bdCbSpecialOffers)
+                    setNewsletter(objectTest.bdCbNewsletter)
+                    setImage(objectTest.profilePicture)
+                })
+                .catch(err => console.error("Erro ao buscar login:", err))
+                .finally()
+            }, []);
+    
     return(
         // Biggest container
         <ScrollView style={styles.container}>
@@ -54,9 +100,9 @@ const Profile = () =>{
                 <Text style={styles.avatarText}>Avatar</Text>
             <View style={styles.header}>
                 {verifyImage() ? (
-                <Image style={styles.userPhoto} source={{uri:image}} />
+                    <Image style={styles.userPhoto} source={{uri:image}} />
                 ) : (
-                    <Text style={styles.noPhoto}>{profilePicLetter.concat(lastName.charAt(0))}</Text>
+                    <Text style={styles.noPhoto}>{oldState.firstName != null ? oldState.firstName.charAt(0).concat(verifyLastName()) : console.log("vazia")}</Text>
                 )}
                 <Pressable
                     onPress={() => handleImagePicker()}
@@ -119,17 +165,17 @@ const Profile = () =>{
                 />
                 <Text style={styles.notificationsText}>Newsletter</Text>
             </View>
-            <Pressable style={styles.logOutButton} onPress={() => changeLogin()}>
+            <Pressable style={styles.logOutButton} onPress={() => {clearAll(), changeLogin(false)}}>
                 <Text style={styles.logOutButtonText}>
                     Log out
                 </Text>
             </Pressable>
             <View style={styles.bottom}>
                 <Pressable style={styles.discardButton}>
-                    <Text style={styles.discardButtonText} onPress={() => getData(oldState.email)}>Discard changes</Text>
+                    <Text style={styles.discardButtonText} onPress={() => console.log(userObject)}>Discard changes</Text>
                 </Pressable>
                 <Pressable style={styles.saveButton}>
-                    <Text style={styles.saveButtonText} onPress={() => validateInfo(lastName, phone)}>Save changes</Text>
+                    <Text style={styles.saveButtonText} onPress={() => validateInfo(image, oldState.firstName, oldState.email, oldState.login, lastName, phone, cbOrderStatus, cbPasswordChanges, cbSpecialOffers, cbNewsletter)}>Save changes</Text>
                 </Pressable>
             </View>
         </ScrollView>

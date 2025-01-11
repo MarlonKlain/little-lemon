@@ -4,7 +4,7 @@ export const UserContext = createContext({});
 
 const initializeState = {
     // Temporaly false while I dont declare the database
-        login: false,
+        login: null,
         firstName: null,
         lastName: null,
         email: null,
@@ -15,7 +15,7 @@ const initializeState = {
             case 'update-login':{
                 return {
                     ...oldState,
-                    login: !oldState.login
+                    login: action.payload.login
                 };
             }
             case 'update-first-name':{
@@ -48,9 +48,9 @@ const initializeState = {
 function UserProvider({children}){
     const [oldState, dispatch] = useReducer(userReducer, initializeState)
 
-    function changeLogin (){
+    function changeLogin (login){
         dispatch({
-            type: 'update-login',
+            type: 'update-login', payload: {login}
         });
     }
     
