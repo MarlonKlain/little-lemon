@@ -3,9 +3,11 @@ import Onboarding from '../Screens/Onboarding';
 import Splashscreen from '../Screens/Splashscreen';
 import { getData, mergeData } from '../Database';
 import { UserContext } from '../context/userContext';
-import { StyleSheet, Image, } from "react-native";
-import { useEffect, useContext} from 'react';
+import { StyleSheet, Image, Pressable, TouchableOpacity } from "react-native";
+import { useEffect, useContext, useState} from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Homescreen from '../Screens/Homescreen';
+import { useNavigation } from '@react-navigation/native';
 
 const Stack = createNativeStackNavigator();
 
@@ -15,12 +17,29 @@ function LogoTitle() {
     );
   }
 
+    function HeaderProfilePicture (){
+        const navigation = useNavigation()
+        return (
+            <TouchableOpacity onPressIn={() => navigation.navigate('Profile')}>
+                <Image 
+                    source={require('../assets/Profile.png')} 
+                    style={{ width: 50, height: 50, borderRadius: 25 }} 
+                />
+            </TouchableOpacity>
+        )
+}
+
 const RootNavigator = () => {
     const {oldState, changeLogin} = useContext(UserContext)
+    const {profilePicture, setProfilePicture} = useState('')
+    
     useEffect(() => {
         getData()
-            .then(res => changeLogin(res ? JSON.parse(res) : false)) // Corrige o estado inicial
+            .then((res) => {
+                changeLogin(res ? JSON.parse(res) : false
+            )})
             .catch(err => console.error("Erro ao buscar login:", err));
+
     }, []); // Apenas uma execução inicial
 
     if (oldState.login === null) {
@@ -30,11 +49,16 @@ const RootNavigator = () => {
             </Stack.Navigator>
         ); // Tela de carregamento ou retorno vazio enquanto o estado é carregado
     }
-
     return (
         <Stack.Navigator>
             {oldState.login ? (
+                <>
+                <Stack.Screen name="Homescreen" component={Homescreen} 
+                    options={({navigation}) => ({
+                        headerRight: (props) => <HeaderProfilePicture {...props} />
+                    })}/>
                 <Stack.Screen name="Profile" component={Profile} />
+                </>
             ) : (
                 <Stack.Screen
                     name="Onboarding"

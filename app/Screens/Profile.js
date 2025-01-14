@@ -198,7 +198,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         borderColor: "black",
         alignItems:'center',
-        // marginLeft:5
         },
 
     changePhotoButton:{
