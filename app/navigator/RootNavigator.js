@@ -1,7 +1,7 @@
 import Profile from '../Screens/Profile';
 import Onboarding from '../Screens/Onboarding';
 import Splashscreen from '../Screens/Splashscreen';
-import { getData, mergeData } from '../Database';
+import { getData, mergeData } from '../Database/Database';
 import { UserContext } from '../context/userContext';
 import { StyleSheet, Image, Pressable, TouchableOpacity } from "react-native";
 import { useEffect, useContext, useState} from 'react';
@@ -31,9 +31,10 @@ function LogoTitle() {
 
 const RootNavigator = () => {
     const {oldState, changeLogin} = useContext(UserContext)
-    const {profilePicture, setProfilePicture} = useState('')
     
     useEffect(() => {
+        
+
         getData()
             .then((res) => {
                 changeLogin(res ? JSON.parse(res) : false
