@@ -1,5 +1,5 @@
 import {View, Text, Pressable, StyleSheet, TextInput, Image, ScrollView} from 'react-native';
-import { storeData, clearAll, getData, mergeData} from '../Database';
+import { storeData, clearAll, getData, mergeData} from '../Database/Database';
 import { useState, useContext, useEffect } from 'react';
 import { UserContext } from '../context/userContext';
 import Checkbox from 'expo-checkbox';

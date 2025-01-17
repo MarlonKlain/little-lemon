@@ -3,7 +3,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import RootNavigator from './navigator/RootNavigator';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import UserContext from './context/userContext';
-
+import { SQLiteProvider } from 'expo-sqlite';
+import { initializeDatabase } from './Database/SQLite-CRUD';
 
 const Stack = createNativeStackNavigator();
 
@@ -15,11 +16,13 @@ function LogoTitle() {
 
 export default function App() {
   return (
-  <NavigationContainer>
-    <UserContext>
-      <RootNavigator />
-    </UserContext>
-  </NavigationContainer>
+    <SQLiteProvider databaseName='little-lemon.db' onInit={initializeDatabase}>
+      <NavigationContainer>
+          <UserContext>
+            <RootNavigator />
+          </UserContext>
+      </NavigationContainer>
+    </SQLiteProvider>
   );
 }
 

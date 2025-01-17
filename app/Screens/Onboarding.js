@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useContext} from 'react';
 import { TextInput, View, Text, StyleSheet, Pressable, Alert} from 'react-native';
-import { getData, mergeData, clearAll, storeData } from '../Database';
+import { getData, mergeData, clearAll, storeData } from '../Database/Database';
 import { UserContext} from '../context/userContext';
 
 const Onboarding = () => {

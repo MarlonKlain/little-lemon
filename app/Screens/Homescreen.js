@@ -1,17 +1,73 @@
 import { useEffect, useState } from 'react';
-import {View, Text, Pressable, StyleSheet, FlatList, ScrollView, Image, Button} from 'react-native';
+import {View, Text, Pressable, StyleSheet, FlatList, Image, Button, Alert} from 'react-native';
 import	AntDesign from '@expo/vector-icons/AntDesign'
+import { useProductDatabase } from '../Database/useProductDatabase';
 
 const Homescreen = () => {
     const [data, setData] = useState([])
     const [category, setCategory] = useState([])
-    useEffect(() => {
-        fetch('https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/capstone.json')
+    const [menuItemImage, setmenuItemImage] = useState('')
+    const productDatabase = useProductDatabase()
+
+
+    async function getDataFromAPI() {
+        const API_URL = 'https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/capstone.json'
+        let responseAPI = {}
+
+        await fetch(API_URL)
         .then((response) => response.json())
-        .then((dataResponse) => {
-            setData(dataResponse.menu)
-            filterDuplicateCategory(dataResponse.menu);
-        })
+        .then((responseJson) => responseAPI = responseJson.menu)
+        // console.log(responseAPI);
+        return responseAPI
+    }
+    
+    async function checkDatabase() {
+        const responseDatabase = await productDatabase.getDataDb()
+        if(responseDatabase == ""){
+            try {
+                let responseAPI = await getDataFromAPI()
+                // console.log(responseAPI);
+                for (let index = 0; index < responseAPI.length; index++) {
+                    create(responseAPI[index].name, responseAPI[index].description, responseAPI[index].price)
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        } else {
+            
+        }
+        
+    }
+    async function create(itemName, description, price) {
+        try {
+            const response = await productDatabase.setDataDB(itemName, description, price)
+            Alert.alert("Linha "+response.insertedRowId+" criada")
+        } catch (error) {
+            console.log(error);
+            
+        }
+    }
+
+    async function showDbData() {
+        try {
+            const response = await productDatabase.getDataDb()
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+            
+        }
+    }
+
+    useEffect(() => {
+        getDataFromAPI()
+        // fetch('https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/capstone.json')
+        // .then((response) => response.json())
+        // .then((dataResponse) => {
+        //     setData(dataResponse.menu)
+        //     filterDuplicateCategory(dataResponse.menu);
+        // })
+
+
     }, [])
     function showData(){
         console.log(data);
@@ -26,14 +82,19 @@ const Homescreen = () => {
         setCategory(element)
     }
 
-    function menuItemPhotoPath (item) {
-        const path = `../assets/${item}`
-        return path
-    }
+    const localImages = {
+        "greekSalad.jpg": require("../assets/greekSalad.jpg"),
+        "bruschetta.jpg": require("../assets/bruschetta.jpg"),
+        "grilledFish.jpg": require("../assets/grilledFish.jpg"),
+        "pasta.jpg": require("../assets/pasta.jpg"),
+        "lemonDessert.jpg": require("../assets/lemonDessert.jpg"),
+    };
+
     return(
     <View style={body.container}>
         <View style={heroSection.container}>
             <Text style={heroSection.title}>Little Lemon</Text>
+            <Button onPress={() => showDbData()} title="Banco de dado" />
             <View style={heroSection.alignImage}>
                 <View>
                     <Text style={heroSection.city}>Chicago</Text>
@@ -49,35 +110,35 @@ const Homescreen = () => {
                 color={"black"}
                 />
             </View>
-            {/* <Button onPress={filterDuplicateCategory} title={'ShowLog'}/> */}
         </View>
-        <View>
+        <View style={{backgroundColor:"#FFFFFF"}}>
             <FlatList
             data={category}
             horizontal={true}
             renderItem={({item}) => (
                 <View>
-                    <Text style={menuItens.item}>{item}</Text>
+                    <Text style={menuItens.category}>{item}</Text>
                 </View>
             )} 
             keyExtractor={(item) => item}/>
         </View>
-        <View>
+        <View style={{flex:1, backgroundColor: "#FFFFFF"}}>
             <FlatList
-            data={data}
-            ItemSeparatorComponent={<View style={menuItens.separator} />}
-            renderItem={({item}) => (
-            <View>
-                <View>
-                    <Text style={menuItens.title}>{item.name}</Text>
-                    <Text style={menuItens.description}>{item.description}</Text>
-                    <Text style={menuItens.price}>{item.price}</Text>
-                </View>
-                    <Image source={"../assets/"+item.image} style={menuItens.photoItem} />
-            </View>
-
-            )} 
-            keyExtractor={(item) => item.name}/>
+                data={data}
+                contentContainerStyle={{ paddingBottom: 20 }} // Espaço extra para evitar corte no final
+                ItemSeparatorComponent={<View style={menuItens.separator} />}
+                renderItem={({ item }) => (
+                    <View style={menuItens.cardContainer}>
+                        <View style={menuItens.textContainer}>
+                            <Text style={menuItens.title}>{item.name}</Text>
+                            <Text style={menuItens.description}>{item.description}</Text>
+                            <Text style={menuItens.price}>{"$" + item.price}</Text>
+                        </View>
+                        <Image source={localImages[item.image]} style={menuItens.photoItem} />
+                    </View>
+                )}
+                keyExtractor={(item) => item.name}
+            /> 
         </View>
     </View>
     );
@@ -97,32 +158,28 @@ const heroSection = StyleSheet.create ({
         fontSize: 50,
         color: '#F4CE14',
         fontWeight: "bold",
-        // backgroundColor:"grey",
         width:254
 
     },
     city:{
         fontSize: 56,
         color: 'white',
-        // backgroundColor:"grey",
         width:190
     },
     apresentation:{
         fontSize: 18,
         color: 'white',
-        // backgroundColor:"grey",
         width:200
     },
     image:{
         width:135,
         height:160,
         borderRadius:16,
-        justifyContent:'center',
         alignSelf:"center"
+
     },
     alignImage:{
         flexDirection:'row',
-        // backgroundColor:"grey",
 
     },
     searchIcon:{
@@ -136,9 +193,9 @@ const heroSection = StyleSheet.create ({
 })
 
 const menuItens = StyleSheet.create ({
-    item: {
+    category: {
         backgroundColor: '#E4E4E4',
-        fontSize:30,
+        fontSize:25,
         margin:20,
         textAlign:'center',
         borderRadius:20,
@@ -146,18 +203,44 @@ const menuItens = StyleSheet.create ({
         paddingBottom:12,
         color:'#465B54'
     },
-    separator: {
-        height:1, 
-        backgroundColor:"black",
-        marginTop:20,
-        marginBottom:20
+    cardContainer: {
+        flexDirection: 'row', // Layout em linha
+        justifyContent: 'space-between', // Imagem à direita
+        alignItems: 'center', // Centraliza verticalmente
+        padding: 10,
+        backgroundColor: '#FFFFFF',
+        borderRadius: 8,
     },
-    photoItem:{
-        width:100,
-        height:70,
-        borderRadius:16,
-        justifyContent:'center',
-        alignSelf:"center"
-    }
+    textContainer: {
+        flex: 1, // Garante que o texto ocupe o espaço restante
+        marginRight: 10, // Espaçamento entre texto e imagem
+    },
+    photoItem: {
+        width: 70,
+        height: 70,
+        borderRadius: 8,
+    },
+    separator: {
+        height: 1,
+        backgroundColor: '#e0e0e0',
+        marginVertical: 10,
+    },
+    title: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 5,
+    },
+    description: {
+        fontSize: 14,
+        marginBottom: 5,
+    },
+    price: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color:"#495E57"
+    },
+
 })
+
+
 export default Homescreen;
