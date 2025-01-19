@@ -15,16 +15,16 @@ const Profile = () =>{
     const [phone, setPhone] = useState('')
     const [image, setImage] = useState(null)
     const [lastName, setLastName] = useState('')
-    const [profilePicLetter , setProfilePicLetter] = useState()
+    // const [profilePicLetter , setProfilePicLetter] = useState()
     const [userObject, setUserObject] = useState({})
 
-    function teste () {
-        if(oldState.firstName == null){
-            console.log("Vazio");
-        } else {
-            console.log("Não vazio")
-        }
-    }
+    // function teste () {
+    //     if(oldState.firstName == null){
+    //         console.log("Vazio");
+    //     } else {
+    //         console.log("Não vazio")
+    //     }
+    // }
     
     async function handleImagePicker() {
         const result = await ImagePicker.launchImageLibraryAsync ({
@@ -93,9 +93,7 @@ const Profile = () =>{
             }, []);
     
     return(
-        // Biggest container
         <ScrollView style={styles.container}>
-            {/* Header content */}
                 <Text style={styles.screenTitle}>Personal Information</Text>
                 <Text style={styles.avatarText}>Avatar</Text>
             <View style={styles.header}>
@@ -132,7 +130,6 @@ const Profile = () =>{
                     keyboardType='numeric'
                 />
             </View>
-            {/* Notification content */}
             <View style={styles.notification}>
                 <Checkbox 
                     value={cbOrderStatus}

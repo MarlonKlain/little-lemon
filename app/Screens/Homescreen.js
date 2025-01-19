@@ -1,14 +1,22 @@
 import { useEffect, useState } from 'react';
-import {View, Text, Pressable, StyleSheet, FlatList, Image, Button, Alert} from 'react-native';
+import {View, Text, Pressable, StyleSheet, FlatList, Image, Button, Alert, TextInput} from 'react-native';
 import	AntDesign from '@expo/vector-icons/AntDesign'
 import { useProductDatabase } from '../Database/useProductDatabase';
 
 const Homescreen = () => {
     const [data, setData] = useState([])
     const [category, setCategory] = useState([])
-    const [menuItemImage, setmenuItemImage] = useState('')
+    const [search, setSearch] =useState(null)
     const productDatabase = useProductDatabase()
 
+    async function deleteData() {
+        await productDatabase.deleteAllData()
+    }
+    async function addNewcolumn() {
+        await productDatabase.alterTable()
+        const responseDatabase = await productDatabase.getDataDb()
+        console.log(responseDatabase);   
+    }
 
     async function getDataFromAPI() {
         const API_URL = 'https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/capstone.json'
@@ -17,7 +25,6 @@ const Homescreen = () => {
         await fetch(API_URL)
         .then((response) => response.json())
         .then((responseJson) => responseAPI = responseJson.menu)
-        // console.log(responseAPI);
         return responseAPI
     }
     
@@ -26,49 +33,70 @@ const Homescreen = () => {
         if(responseDatabase == ""){
             try {
                 let responseAPI = await getDataFromAPI()
-                // console.log(responseAPI);
                 for (let index = 0; index < responseAPI.length; index++) {
-                    create(responseAPI[index].name, responseAPI[index].description, responseAPI[index].price)
+                    create(responseAPI[index].name, responseAPI[index].description, responseAPI[index].price, responseAPI[index].category, responseAPI[index].image)
                 }
             } catch (error) {
                 console.log(error);
             }
         } else {
-            
+            setData(responseDatabase)
+            filterDuplicateCategory(responseDatabase)
         }
         
     }
-    async function create(itemName, description, price) {
+    async function create(itemName, description, price, category, image) {
         try {
-            const response = await productDatabase.setDataDB(itemName, description, price)
+            const response = await productDatabase.setDataDB(itemName, description, price, category, image)
             Alert.alert("Linha "+response.insertedRowId+" criada")
         } catch (error) {
-            console.log(error);
+            console.log("create: ", error);
             
         }
     }
 
-    async function showDbData() {
+    // async function showDbData() {
+    //     try {
+    //         const response = await productDatabase.getDataDb()
+    //         console.log(response);
+    //     } catch (error) {
+    //         console.log(error);
+            
+    //     }
+    // }
+
+    async function listSearch(name) {
         try {
-            const response = await productDatabase.getDataDb()
-            console.log(response);
+            const response = await productDatabase.searchByName(name)
+            setData(response)
         } catch (error) {
-            console.log(error);
+            console.log("listSearch: ", error);
             
         }
     }
 
+    function capitalizeFirstLetter(word) {
+        const capitalized = word.charAt(0).toUpperCase() + word.slice(1)
+        return capitalized
+    }
+    async function filterDishes(category, itemName) {
+        try {
+            const response = await productDatabase.filter(category, itemName)            
+            setData(response)
+        } catch (error) {
+            console.log("FilterDishes: ", error);
+            
+        }
+    }
     useEffect(() => {
-        getDataFromAPI()
-        // fetch('https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/capstone.json')
-        // .then((response) => response.json())
-        // .then((dataResponse) => {
-        //     setData(dataResponse.menu)
-        //     filterDuplicateCategory(dataResponse.menu);
-        // })
-
+        checkDatabase()
 
     }, [])
+
+    useEffect(() => {
+        listSearch(search)
+    }, [search])
+
     function showData(){
         console.log(data);
     }
@@ -94,7 +122,6 @@ const Homescreen = () => {
     <View style={body.container}>
         <View style={heroSection.container}>
             <Text style={heroSection.title}>Little Lemon</Text>
-            <Button onPress={() => showDbData()} title="Banco de dado" />
             <View style={heroSection.alignImage}>
                 <View>
                     <Text style={heroSection.city}>Chicago</Text>
@@ -102,13 +129,19 @@ const Homescreen = () => {
                 </View>
                     <Image style={heroSection.image} source={require('../assets/Hero image.png')}/>
             </View>
-            <View style={heroSection.searchIcon}>
-                <AntDesign name='search1' 
-                backgroundColor="#E4E4E4" 
-                size={20}
-                margin={10}
-                color={"black"}
-                />
+            <View style={heroSection.searchContainer}>
+                <View style={heroSection.searchInputContainer}>
+                    <AntDesign 
+                        name='search1' 
+                        style={heroSection.searchIcon} 
+                    />
+                    <TextInput 
+                        style={heroSection.searchInput} 
+                        placeholder="Search"
+                        placeholderTextColor="#8E8E93"
+                        onChangeText={setSearch} 
+                    />
+                </View>
             </View>
         </View>
         <View style={{backgroundColor:"#FFFFFF"}}>
@@ -116,9 +149,11 @@ const Homescreen = () => {
             data={category}
             horizontal={true}
             renderItem={({item}) => (
-                <View>
-                    <Text style={menuItens.category}>{item}</Text>
-                </View>
+                <Pressable onPress={() => filterDishes(item, search)}>
+                    <View>
+                        <Text style={menuItens.category}>{capitalizeFirstLetter(item)}</Text>
+                    </View>
+                </Pressable>
             )} 
             keyExtractor={(item) => item}/>
         </View>
@@ -130,14 +165,14 @@ const Homescreen = () => {
                 renderItem={({ item }) => (
                     <View style={menuItens.cardContainer}>
                         <View style={menuItens.textContainer}>
-                            <Text style={menuItens.title}>{item.name}</Text>
+                            <Text style={menuItens.title}>{item.itemName}</Text>
                             <Text style={menuItens.description}>{item.description}</Text>
                             <Text style={menuItens.price}>{"$" + item.price}</Text>
                         </View>
                         <Image source={localImages[item.image]} style={menuItens.photoItem} />
                     </View>
                 )}
-                keyExtractor={(item) => item.name}
+                keyExtractor={(item) => item.id}
             /> 
         </View>
     </View>
@@ -182,14 +217,29 @@ const heroSection = StyleSheet.create ({
         flexDirection:'row',
 
     },
-    searchIcon:{
-        width:40,
-        backgroundColor:"#E4E4E4",
-        justifyContent:"center",
-        borderRadius:20,
-        marginTop:10,
-        marginBottom:10
-    }
+    searchContainer: {
+        marginTop:20,
+        marginBottom:20,
+    },
+    searchInputContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: "#E4E4E4",
+        borderRadius: 8,
+        height: 50,
+        paddingHorizontal: 10, // Espaçamento interno
+    },
+    searchIcon: {
+        marginRight: 10, // Espaçamento entre o ícone e o campo de texto
+        fontSize: 20,
+        color: "#495E57",
+    },
+    searchInput: {
+        flex: 1,
+        height: '100%',
+        fontSize: 16,
+        color: "#000",
+    },
 })
 
 const menuItens = StyleSheet.create ({

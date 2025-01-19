@@ -8,7 +8,9 @@ export async function initializeDatabase() {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         itemName TEXT NOT NULL,
         description TEXT NOT NULL,
-        price FLOAT NOT NULL
+        price FLOAT NOT NULL,
+        category TEXT NOT NULL,
+        image TEXT NOT NULL
         );
         `);
 }
