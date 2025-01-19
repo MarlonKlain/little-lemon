@@ -1,10 +1,10 @@
 import Profile from '../Screens/Profile';
 import Onboarding from '../Screens/Onboarding';
 import Splashscreen from '../Screens/Splashscreen';
-import { getData, mergeData } from '../Database/Database';
+import { getData } from '../Database/Database';
 import { UserContext } from '../context/userContext';
-import { StyleSheet, Image, Pressable, TouchableOpacity } from "react-native";
-import { useEffect, useContext, useState} from 'react';
+import { Image, TouchableOpacity } from "react-native";
+import { useEffect, useContext} from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Homescreen from '../Screens/Homescreen';
 import { useNavigation } from '@react-navigation/native';
@@ -74,13 +74,4 @@ const RootNavigator = () => {
     );
 };
 
-const style = StyleSheet.create({
-    container:{
-        flex:1,
-        alignContent:"center"
-    },
-    headerText:{
-        fontSize:20,
-    }
-})
 export default RootNavigator;
