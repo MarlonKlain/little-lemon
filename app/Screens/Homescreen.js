@@ -9,15 +9,6 @@ const Homescreen = () => {
     const [search, setSearch] =useState(null)
     const productDatabase = useProductDatabase()
 
-    async function deleteData() {
-        await productDatabase.deleteAllData()
-    }
-    async function addNewcolumn() {
-        await productDatabase.alterTable()
-        const responseDatabase = await productDatabase.getDataDb()
-        console.log(responseDatabase);   
-    }
-
     async function getDataFromAPI() {
         const API_URL = 'https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/capstone.json'
         let responseAPI = {}
@@ -55,16 +46,6 @@ const Homescreen = () => {
         }
     }
 
-    // async function showDbData() {
-    //     try {
-    //         const response = await productDatabase.getDataDb()
-    //         console.log(response);
-    //     } catch (error) {
-    //         console.log(error);
-            
-    //     }
-    // }
-
     async function listSearch(name) {
         try {
             const response = await productDatabase.searchByName(name)
@@ -79,6 +60,7 @@ const Homescreen = () => {
         const capitalized = word.charAt(0).toUpperCase() + word.slice(1)
         return capitalized
     }
+    
     async function filterDishes(category, itemName) {
         try {
             const response = await productDatabase.filter(category, itemName)            
@@ -88,18 +70,7 @@ const Homescreen = () => {
             
         }
     }
-    useEffect(() => {
-        checkDatabase()
 
-    }, [])
-
-    useEffect(() => {
-        listSearch(search)
-    }, [search])
-
-    function showData(){
-        console.log(data);
-    }
     function filterDuplicateCategory (object) {
         const element = []
         for (let index = 0; index < object.length; index++) {
@@ -117,6 +88,13 @@ const Homescreen = () => {
         "pasta.jpg": require("../assets/pasta.jpg"),
         "lemonDessert.jpg": require("../assets/lemonDessert.jpg"),
     };
+    useEffect(() => {
+        checkDatabase()
+    }, [])
+
+    useEffect(() => {
+        listSearch(search)
+    }, [search])
 
     return(
     <View style={body.container}>

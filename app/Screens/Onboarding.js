@@ -1,24 +1,32 @@
-import React, {useEffect, useState, useContext} from 'react';
+import React, {useState, useContext} from 'react';
 import { TextInput, View, Text, StyleSheet, Pressable, Alert} from 'react-native';
-import { getData, mergeData, clearAll, storeData } from '../Database/Database';
+import {storeData } from '../Database/Database';
 import { UserContext} from '../context/userContext';
 
 const Onboarding = () => {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const {oldState, changeLogin, changeFirstName, changeEmail} = useContext(UserContext)
+    //Receives the first Name
+    const [firstName, setFirstName] = useState(null);
+    //Receives the user's email
+    const [email, setEmail] = useState(null);
+    //Destructuring the userContext
+    const {changeLogin, changeFirstName, changeEmail} = useContext(UserContext)
 
-    function validateInfos(name, email){
-    
-        const validate = /\d/;
+    //validate the information provides by user
+    function validateUserInfo(name, email){
+        //  creating a regular expression (RegExp). The \d is a shorthand character class in regular expressions that matches any digit (0-9).
+        const validate = /\d/;        
+        //if the first name or email was not fullfilled, a alert will be show to the user
         if(name == "" || email == ""){
             Alert.alert("Please, fullfill all the fields.");
-            return false
-            
+            //validating if there is any number inside the first name input
         } else if (validate.test(name)){
             Alert.alert(`The 'First Name' field can only contain letters`)
-            return false
         } else {
+
+
+        //Fazer amanhã
+        
+        // If the user's personal information pass tha validation, it will create a object with the personal information that  
             const createObject = (argName, argEmail, argLogin, argLastName, argPhone, argCbOrderStatus, argCbPasswordChanges, argCbSpecialOffers, argCbNewsletter ) => ({
                 firstName: argName,
                 email: argEmail,
@@ -35,8 +43,6 @@ const Onboarding = () => {
             changeLogin(true)
             changeFirstName(name)
             changeEmail(email)
-            return true
-            
         }
     }
 
@@ -45,15 +51,15 @@ const Onboarding = () => {
         <View style={styles.container}>
             <Text style={styles.textInput}>First Name</Text>
             <TextInput style={styles.userInput} 
-            value={name} 
-            onChangeText={setName}/>
+            value={firstName} 
+            onChangeText={setFirstName}/>
             <Text style={styles.textInput}>Email</Text>
             <TextInput style={styles.userInput}
             value={email}
             onChangeText={setEmail}/>
         </View>
         <View style={styles.bottom}>
-            <Pressable style={styles.nextButton} onPress={() => validateInfos(name, email)} >
+            <Pressable style={styles.nextButton} onPress={() => validateUserInfo(firstName, email)} >
                 <Text style={styles.nextButtonText}>Next</Text>
             </Pressable>
         </View>
