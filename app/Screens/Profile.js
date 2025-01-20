@@ -1,5 +1,5 @@
 import {View, Text, Pressable, StyleSheet, TextInput, Image, ScrollView} from 'react-native';
-import { storeData, clearAll, getData, mergeData} from '../Database/Database';
+import { storeData, clearAll, getData} from '../Database/Database';
 import { useState, useContext, useEffect } from 'react';
 import { UserContext } from '../context/userContext';
 import Checkbox from 'expo-checkbox';
@@ -7,7 +7,7 @@ import { MaskedTextInput } from 'react-native-mask-text';
 import * as ImagePicker from 'expo-image-picker';
 
 const Profile = () =>{
-    const {oldState, changeLogin, changeFirstName, changeLastName, changePhone, changeEmail} = useContext(UserContext)
+    const {oldState, changeLogin, changeFirstName, changeEmail} = useContext(UserContext)
     const [cbOrderStatus, setOrderStatus] = useState(false)
     const [cbPasswordChanges, setPasswordChanges] = useState(false)
     const [cbSpecialOffers, setSpecialOffers] = useState(false)
@@ -15,16 +15,7 @@ const Profile = () =>{
     const [phone, setPhone] = useState('')
     const [image, setImage] = useState(null)
     const [lastName, setLastName] = useState('')
-    // const [profilePicLetter , setProfilePicLetter] = useState()
     const [userObject, setUserObject] = useState({})
-
-    // function teste () {
-    //     if(oldState.firstName == null){
-    //         console.log("Vazio");
-    //     } else {
-    //         console.log("Não vazio")
-    //     }
-    // }
     
     async function handleImagePicker() {
         const result = await ImagePicker.launchImageLibraryAsync ({
