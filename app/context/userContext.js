@@ -10,35 +10,35 @@ const initializeState = {
         email: null,
         phoneNumber: null
 }
-    function userReducer (oldState, action){
+    function userReducer (user, action){
         switch(action.type){
             case 'update-login':{
                 return {
-                    ...oldState,
+                    ...user,
                     login: action.payload.login
                 };
             }
             case 'update-first-name':{
                 return {
-                    ...oldState,
+                    ...user,
                     firstName: action.payload.firstName
                 }
             }
             case 'update-last-name':{
                 return {
-                    ...oldState,
+                    ...user,
                     lastName: action.payload.lastName
                 }
             }
             case 'update-email':{
                 return {
-                    ...oldState,
+                    ...user,
                     email: action.payload.email
                 }
             }
             case 'update-phone-number':{
                 return {
-                    ...oldState,
+                    ...user,
                     phone: action.payload.phone
                 }
             }
@@ -46,7 +46,7 @@ const initializeState = {
 }
 
 function UserProvider({children}){
-    const [oldState, dispatch] = useReducer(userReducer, initializeState)
+    const [user, dispatch] = useReducer(userReducer, initializeState)
 
     function changeLogin (login){
         dispatch({
@@ -79,7 +79,7 @@ function UserProvider({children}){
     }
 
     return(
-        <UserContext.Provider value={{oldState, changeLogin, changeFirstName, changeEmail, changeLastName, changePhone}}>
+        <UserContext.Provider value={{user, changeLogin, changeFirstName, changeEmail, changeLastName, changePhone}}>
             {children}
         </UserContext.Provider>
     )
