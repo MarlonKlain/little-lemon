@@ -1,6 +1,6 @@
 import React, {useState, useContext} from 'react';
 import { TextInput, View, Text, StyleSheet, Pressable, Alert} from 'react-native';
-import {storeData } from '../Database/Database';
+import {storeData } from '../Database/AsyncStorag-Database';
 import { UserContext} from '../context/userContext';
 
 const Onboarding = () => {
@@ -22,11 +22,8 @@ const Onboarding = () => {
         } else if (validate.test(name)){
             Alert.alert(`The 'First Name' field can only contain letters`)
         } else {
-
-
-        //Fazer amanhã
         
-        // If the user's personal information pass tha validation, it will create a object with the personal information that  
+        // If the user's personal information pass tha validation, it will create a object with the personal information 
             const createObject = (argName, argEmail, argLogin, argLastName, argPhone, argCbOrderStatus, argCbPasswordChanges, argCbSpecialOffers, argCbNewsletter ) => ({
                 firstName: argName,
                 email: argEmail,
@@ -38,9 +35,13 @@ const Onboarding = () => {
                 bdCbSpecialOffers: argCbSpecialOffers,
                 bdCbNewsletter: argCbNewsletter,
             });
+            // Here it is only passing three arguments and they will be stored locally
             const loginObject = createObject(name, email, true)
+            // Storing locally
             storeData(loginObject)
+            // Changing the state of user's login to true, after he finalized the login. It will triggered the change in RootNavigator and change the screen.
             changeLogin(true)
+            // storing the first name and email inside the user context so they can be use inside the profile screen.
             changeFirstName(name)
             changeEmail(email)
         }

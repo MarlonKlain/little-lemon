@@ -1,5 +1,5 @@
 import {View, Text, Pressable, StyleSheet, TextInput, Image, ScrollView} from 'react-native';
-import { storeData, clearAll, getData} from '../Database/Database';
+import { storeData, clearAll, getData} from '../Database/AsyncStorag-Database';
 import { useState, useContext, useEffect } from 'react';
 import { UserContext } from '../context/userContext';
 import Checkbox from 'expo-checkbox';
@@ -7,7 +7,7 @@ import { MaskedTextInput } from 'react-native-mask-text';
 import * as ImagePicker from 'expo-image-picker';
 
 const Profile = () =>{
-    const {oldState, changeLogin, changeFirstName, changeEmail} = useContext(UserContext)
+    const {user, changeLogin, changeFirstName, changeEmail} = useContext(UserContext)
     const [cbOrderStatus, setOrderStatus] = useState(false)
     const [cbPasswordChanges, setPasswordChanges] = useState(false)
     const [cbSpecialOffers, setSpecialOffers] = useState(false)
@@ -91,7 +91,7 @@ const Profile = () =>{
                 {verifyImage() ? (
                     <Image style={styles.userPhoto} source={{uri:image}} />
                 ) : (
-                    <Text style={styles.noPhoto}>{oldState.firstName != null ? oldState.firstName.charAt(0).concat(verifyLastName()) : console.log("vazia")}</Text>
+                    <Text style={styles.noPhoto}>{user.firstName != null ? user.firstName.charAt(0).concat(verifyLastName()) : console.log("vazia")}</Text>
                 )}
                 <Pressable
                     onPress={() => handleImagePicker()}
@@ -107,11 +107,11 @@ const Profile = () =>{
             {/* Middle content */}
             <View style={styles.middleContent}>
                 <Text style={styles.inputText}>First name</Text>
-                <TextInput style={styles.userInput} value={oldState.firstName} editable={false}></TextInput>
+                <TextInput style={styles.userInput} value={user.firstName} editable={false}></TextInput>
                 <Text style={styles.inputText}>Last name</Text>
                 <TextInput style={styles.userInput} value={lastName} onChangeText={setLastName}></TextInput>
                 <Text style={styles.inputText}>Email</Text>
-                <TextInput style={styles.userInput} value={oldState.email} editable={false}></TextInput>
+                <TextInput style={styles.userInput} value={user.email} editable={false}></TextInput>
                 <Text style={styles.inputText}>Phone</Text>
                 <MaskedTextInput
                     mask='(999) 999-999'
@@ -163,7 +163,7 @@ const Profile = () =>{
                     <Text style={styles.discardButtonText} onPress={() => console.log(userObject)}>Discard changes</Text>
                 </Pressable>
                 <Pressable style={styles.saveButton}>
-                    <Text style={styles.saveButtonText} onPress={() => validateInfo(image, oldState.firstName, oldState.email, oldState.login, lastName, phone, cbOrderStatus, cbPasswordChanges, cbSpecialOffers, cbNewsletter)}>Save changes</Text>
+                    <Text style={styles.saveButtonText} onPress={() => validateInfo(image, user.firstName, user.email, user.login, lastName, phone, cbOrderStatus, cbPasswordChanges, cbSpecialOffers, cbNewsletter)}>Save changes</Text>
                 </Pressable>
             </View>
         </ScrollView>

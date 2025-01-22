@@ -1,5 +1,7 @@
+// All the methods responsible for manipaluting the locally data, using AsyncStorage 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+//storing the data locally, through the ky "User"
 export async function storeData (value) {
   try {
     const stringifyObject = JSON.stringify(value)
@@ -9,6 +11,7 @@ export async function storeData (value) {
   }
 };
 
+//getting the data
 export async function getData () {
   try {
     const jsonValue = await AsyncStorage.getItem("User");
@@ -20,6 +23,7 @@ export async function getData () {
   }
 };
 
+//updating the data that already exists 
 export async function mergeData(value) {
   try{
     await AsyncStorage.mergeItem("User", JSON.stringify(value))
@@ -28,6 +32,8 @@ export async function mergeData(value) {
   }
 }
 
+
+//clearing all the data
 export async function clearAll (){
   try {
     await AsyncStorage.clear()
