@@ -1,15 +1,18 @@
+//Using the useSQLiteContext hook
 import { useSQLiteContext } from "expo-sqlite"
 
 export function useProductDatabase (){
 
     const database = useSQLiteContext()
-
+    //storing data
     async function setDataDB(itemName, description, price, category, image) {
+        //Using prepareAsync as "template" to store data
         const statement = await database.prepareAsync(
           "INSERT INTO menuItens (itemName, description, price, category, image) VALUES ($itemName, $description, $price, $category, $image)"
         )
     
         try {
+          //passing to "executeAsync" the SQL line from "prepareAsync above" and executing it 
             const result = await statement.executeAsync({
                 $itemName: itemName,
                 $description: description,
@@ -17,17 +20,18 @@ export function useProductDatabase (){
                 $category: category,
                 $image: image
             })
-    
+          
+          //Getting the id's last rows.
           const insertedRowId = result.lastInsertRowId.toLocaleString()
-    
           return { insertedRowId }
+
         } catch (error) {
           throw error
         } finally {
           await statement.finalizeAsync()
         }
     }
-
+    //getting data from database
     async function getDataDb() {
         try {
             const query = "SELECT * FROM menuItens"
@@ -38,6 +42,7 @@ export function useProductDatabase (){
         }
     }
     
+    //searching in the database by names like the value(name) that is beeing looking for
     async function searchByName(name) {
       try {
         const query = "SELECT * FROM menuItens WHERE itemName LIKE ?"
@@ -48,7 +53,8 @@ export function useProductDatabase (){
       }
     }
 
-    async function filter(category, itemName) {      
+    async function filter(category, itemName) {
+      //Validanting if the data from filter is not null
       if(itemName != null && category != null){
         const query = "SELECT * FROM menuItens WHERE category LIKE $category AND itemName LIKE $itemName"
           try {
@@ -60,6 +66,7 @@ export function useProductDatabase (){
           } catch (error) {
             console.log("Filter: both ", error);
           }
+      // if only itemName is fullfilled, then the search will be acomplished only using the itemName value
       } else if (itemName != null){
         const query = "SELECT * FROM menuItens WHERE itemName LIKE $itemName"
           try {
@@ -71,6 +78,7 @@ export function useProductDatabase (){
             console.log("Filter: itemName ", error);
           }
       } else {
+        // if only category is fullfilled, then the search will be acomplished only using the category value
         const query = "SELECT * FROM menuItens WHERE category LIKE $category"
           try {
             const response = await database.getAllAsync(query, {
@@ -83,6 +91,7 @@ export function useProductDatabase (){
           }
       }
     }
+    //deleting all the rows from the table menuItens
     async function deleteAllData (){
       try {
         await database.execAsync(`
@@ -94,16 +103,6 @@ export function useProductDatabase (){
       }
     }
 
-    async function alterTable() {
-      try {
-        await database.execAsync(`
-          ALTER TABLE menuItens ADD COLUMN image TEXT NOT NULL;
-          `)
-      } catch (error) {
-        console.log("alterTable: " , error);
-        
-      }
-    }
-    return {setDataDB, getDataDb, deleteAllData, alterTable, searchByName, filter}
+    return {setDataDB, getDataDb, deleteAllData, searchByName, filter}
 }
 

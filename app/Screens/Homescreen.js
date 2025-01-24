@@ -1,5 +1,6 @@
+//screen where all the menu items are showed to the user
 import { useEffect, useState } from 'react';
-import {View, Text, Pressable, StyleSheet, FlatList, Image, Button, Alert, TextInput} from 'react-native';
+import {View, Text, Pressable, StyleSheet, FlatList, Image, Alert, TextInput} from 'react-native';
 import	AntDesign from '@expo/vector-icons/AntDesign'
 import { useProductDatabase } from '../Database/useProductDatabase';
 
@@ -7,18 +8,23 @@ const Homescreen = () => {
     const [data, setData] = useState([])
     const [category, setCategory] = useState([])
     const [search, setSearch] =useState(null)
+    //getting acess to all the methods used to manipulate the database
     const productDatabase = useProductDatabase()
 
     async function getDataFromAPI() {
+        //API that will provide the data
         const API_URL = 'https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/capstone.json'
         let responseAPI = {}
 
+        //receiving the data
         await fetch(API_URL)
         .then((response) => response.json())
         .then((responseJson) => responseAPI = responseJson.menu)
         return responseAPI
     }
-    
+    //checking if the database already has all the information from the API,
+    //if not, all the data from the API will stored in the database
+    //if does, then the data from API will be request and stored in the database
     async function checkDatabase() {
         const responseDatabase = await productDatabase.getDataDb()
         if(responseDatabase == ""){
@@ -32,10 +38,13 @@ const Homescreen = () => {
             }
         } else {
             setData(responseDatabase)
+            //filtering all the categories that are repeated
             filterDuplicateCategory(responseDatabase)
         }
         
     }
+
+    //Function used inside the checkDatabase to store  all the data that came from the API 
     async function create(itemName, description, price, category, image) {
         try {
             const response = await productDatabase.setDataDB(itemName, description, price, category, image)
@@ -45,7 +54,7 @@ const Homescreen = () => {
             
         }
     }
-
+    //used to filter the menu itens by name
     async function listSearch(name) {
         try {
             const response = await productDatabase.searchByName(name)
@@ -56,11 +65,12 @@ const Homescreen = () => {
         }
     }
 
+    //the categories names come from the API all in lowercase, so this function transform the first letter to uppercase
     function capitalizeFirstLetter(word) {
         const capitalized = word.charAt(0).toUpperCase() + word.slice(1)
         return capitalized
     }
-    
+    //filtering the menu items by category and name
     async function filterDishes(category, itemName) {
         try {
             const response = await productDatabase.filter(category, itemName)            
@@ -70,7 +80,7 @@ const Homescreen = () => {
             
         }
     }
-
+    //the function used to filter all the categories that are repeated 
     function filterDuplicateCategory (object) {
         const element = []
         for (let index = 0; index < object.length; index++) {
@@ -80,7 +90,9 @@ const Homescreen = () => {
         }
         setCategory(element)
     }
-
+    //using a object to gain acess to the local pictures from the menu items
+    //I'm using by this way, because when I tried to pass a variable with the value inside the required
+    //I discovered that was not possible to do it, 
     const localImages = {
         "greekSalad.jpg": require("../assets/greekSalad.jpg"),
         "bruschetta.jpg": require("../assets/bruschetta.jpg"),
@@ -88,10 +100,12 @@ const Homescreen = () => {
         "pasta.jpg": require("../assets/pasta.jpg"),
         "lemonDessert.jpg": require("../assets/lemonDessert.jpg"),
     };
+    //checking if the database already contains the data from the API every time the app is started
     useEffect(() => {
         checkDatabase()
     }, [])
 
+    //Every time the user change the state of "serch", a useState hook that receives the name from the menu item that he would like to search, the screen will be re-render
     useEffect(() => {
         listSearch(search)
     }, [search])
