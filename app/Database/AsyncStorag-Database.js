@@ -19,7 +19,8 @@ export async function getData () {
     return jsonValue
     
   } catch (e) {
-    // error reading value
+    console.log(e);
+    
   }
 };
 
@@ -28,7 +29,7 @@ export async function mergeData(value) {
   try{
     await AsyncStorage.mergeItem("User", JSON.stringify(value))
   } catch (e){
-
+    console.log(e);
   }
 }
 
@@ -38,7 +39,7 @@ export async function clearAll (){
   try {
     await AsyncStorage.clear()
   } catch(e) {
-    // clear error
+    console.log(e);
   }
 
   console.log('Local storage cleared.')

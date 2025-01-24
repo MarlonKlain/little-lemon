@@ -1,3 +1,4 @@
+//The screen that contains all the user's information
 import {View, Text, Pressable, StyleSheet, TextInput, Image, ScrollView} from 'react-native';
 import { storeData, clearAll, getData} from '../Database/AsyncStorag-Database';
 import { useState, useContext, useEffect } from 'react';
@@ -17,6 +18,7 @@ const Profile = () =>{
     const [lastName, setLastName] = useState('')
     const [userObject, setUserObject] = useState({})
     
+    //Defining how some properties of the image that the user will choose from his galery
     async function handleImagePicker() {
         const result = await ImagePicker.launchImageLibraryAsync ({
             aspect:[4,4],
@@ -25,11 +27,16 @@ const Profile = () =>{
             quality:1
         })
 
+        //If the user cancels the process of choosing a picture from his galery
         if(!result.canceled){
             console.log(setImage(result.assets[0].uri))
         }
     }
 
+    //Verifng if the user fullfilled the last name field,
+    //if yes, the first letter of his last name will be showed together
+    //with the first letter of his first name 
+    //as his profile picture
     function verifyLastName () {
         if (lastName != null) {
             return lastName.charAt(0)
@@ -38,6 +45,8 @@ const Profile = () =>{
         }
     }
 
+    //Verifying if the user has uploaded a picture from his galery, 
+    //if not, a picture with the first letter of his first and last name will be showed as profile picture
     const verifyImage = () => {
         if(image == null){
             return false
@@ -46,6 +55,7 @@ const Profile = () =>{
         }
     }
 
+    //validating if the user fulfilled all the field that are required of his profile
     const validateInfo = (argProfilePic, argName, argEmail, argLogin, argLastName, argPhone, argCbOrderStatus, argCbPasswordChanges, argCbSpecialOffers, argCbNewsletter ) => {
         if ( argLastName != null && argPhone != null){
             storeData({
@@ -63,7 +73,7 @@ const Profile = () =>{
             console.log("Informações salvas com sucesso!")
         }
     }
-
+    //getting all the user's information if he has informed previously
     useEffect(() => {
             getData()
                 .then(function (res) {
@@ -113,6 +123,7 @@ const Profile = () =>{
                 <Text style={styles.inputText}>Email</Text>
                 <TextInput style={styles.userInput} value={user.email} editable={false}></TextInput>
                 <Text style={styles.inputText}>Phone</Text>
+                {/* Mask for when the user fulfill the phone number */}
                 <MaskedTextInput
                     mask='(999) 999-999'
                     value={phone}
