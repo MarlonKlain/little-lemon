@@ -3,7 +3,7 @@ import Onboarding from '../Screens/Onboarding';
 import Splashscreen from '../Screens/Splashscreen';
 import { getData } from '../Database/AsyncStorag-Database';
 import { UserContext } from '../context/userContext';
-import { Image, TouchableOpacity } from "react-native";
+import { Image, TouchableOpacity, StyleSheet, View, Text} from "react-native";
 import { useEffect, useContext, useState} from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Homescreen from '../Screens/Homescreen';
@@ -19,24 +19,39 @@ function LogoTitle() {
   }
 
 // the user's profile picture that will be showed in the header and can be touched and drive the user to profile screen
-function HeaderProfilePicture ({profilePicture}){
-    //calling the useNavigation hook to gain acess to the navigation object
-    const navigation = useNavigation()
-    const userProfilePicture = require(profilePicture)
+function HeaderProfilePicture({ profilePicture, firstName, lastName }) {
+    const navigation = useNavigation();
+
+    // Function to generate a fallback view with initials
+    const pictureWithFirstLetter = () => {
+        const initials = `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`;
+        return (
+            <View style={styles.initialsContainer}>
+                <Text style={styles.initialsText}>{initials.toUpperCase()}</Text>
+            </View>
+        );
+    };
+
     return (
         <TouchableOpacity onPressIn={() => navigation.navigate('Profile')}>
-            <Image 
-                source={require(userProfilePicture)} 
-                style={{ width: 50, height: 50, borderRadius: 25 }} 
-            />
+            {profilePicture ? (
+                <Image 
+                    source={{ uri: profilePicture }} 
+                    style={styles.profilePicture} 
+                />
+            ) : (
+                pictureWithFirstLetter()
+            )}
         </TouchableOpacity>
-    )
+    );
 }
 
 const RootNavigator = () => {
     //Destructuring the userContext
-    const {user, changeLogin} = useContext(UserContext)
+    const {user, changeLogin, changeFirstName, changeLastName} = useContext(UserContext)
     const [profilePicture, setProfilePicture] = useState(null)
+    const [firstName, setFirstName] = useState(null)
+    const [lastName, setLastName] = useState(null)
     
     useEffect(() => {
         // calling the getData async method to get verify if the user has logged in previously, this value is stored locally
@@ -47,14 +62,16 @@ const RootNavigator = () => {
                 let response = JSON.parse(res)
                 if(response != null){
                     changeLogin(response.login ? response.login : false)
-                    setProfilePicture(response.profilePicture)
+                    setProfilePicture(response.profilePicture)  
+                    changeFirstName(response.firstName) 
+                    changeLastName(response.lastName)                 
                 } else {
-                    setProfilePicture(require("../assets/Profile.png"))
+                    changeLogin(false)  
                 }
             })
             .catch(err => console.error("Erro ao buscar login:", err));
 
-    }, [profilePicture]);
+    }, [profilePicture, changeLastName]);
 
     // while the login validation is not complete, will be showed the splashscreen
     if (user.login === null) {
@@ -71,7 +88,7 @@ const RootNavigator = () => {
                 <>
                 <Stack.Screen name="Homescreen" component={Homescreen} 
                     options={() => ({
-                        headerRight: (props) => <HeaderProfilePicture profilePicture={profilePicture}{...props} />
+                        headerRight: (props) => <HeaderProfilePicture profilePicture={profilePicture} lastName={user.lastName} firstName={user.firstName} {...props} />
                     })}/>
                 <Stack.Screen name="Profile" component={Profile} />
                 </>
@@ -88,5 +105,28 @@ const RootNavigator = () => {
         </Stack.Navigator>
     );
 };
+
+const styles = StyleSheet.create({
+    profilePicture: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+    },
+    initialsContainer: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        backgroundColor: '#ccc', // Default background color for initials
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    initialsText: {
+        color: '#fff', // Text color
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+});
+
+
 
 export default RootNavigator;
