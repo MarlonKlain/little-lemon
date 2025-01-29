@@ -22,8 +22,8 @@
 - **State Management:** Utilized React Native hooks like `useContext`, `useState`, and `useEffect` to manage application state efficiently.
 - **Full Development Lifecycle:** Designed and implemented the application from the ground up, including integrating APIs, managing local storage, and ensuring a seamless user experience.
 - **Automatic Session Validation**  
-  Persists login state using AsyncStorage, skipping redundant logins for returning users.
-
+  Persists the login state using AsyncStorage, skipping unnecessary logins when the user closes and reopens the app.
+  
 ## Technologies Used:
 - **Programming Languages:** JavaScript
 - **Frameworks & Libraries:** React Native, React Navigation
