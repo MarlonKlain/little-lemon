@@ -12,6 +12,8 @@
 - **Profile Management:** Users can update their profile information (e.g., contact details), which is also stored locally using **AsyncStorage**.
 - **State Management:** Utilized React Native hooks like `useContext`, `useState`, and `useEffect` to manage application state efficiently.
 - **Full Development Lifecycle:** Designed and implemented the application from the ground up, including integrating APIs, managing local storage, and ensuring a seamless user experience.
+- **Automatic Session Validation**  
+  Persists login state using AsyncStorage, skipping redundant logins for returning users.
 
 ## Technologies Used:
 - **Programming Languages:** JavaScript
