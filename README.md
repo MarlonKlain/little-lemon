@@ -6,6 +6,15 @@
 
 **Little Lemon App** is a capstone project developed as part of the **Meta React Native Specialization** on Coursera. This mobile application simulates a restaurant experience, allowing users to log in, browse the menu, and manage their profile information. 
 
+## App Preview  
+<table>
+  <tr>
+    <td><img src="assets/home-screen.jpg" alt="Login Screen" width="200"/></td>
+    <td><img src="assets/login-screen.jpg" alt="Menu Screen" width="200"/></td>
+    <td><img src="assets/profile-screen.jpg" alt="Profile Screen" width="200"/></td>
+  </tr>
+</table>
+
 ## Key Features:
 - **Menu Browsing:** The app fetches and displays menu items from an external **REST API**.
 - **Data Persistence:** Menu data is stored locally using **SQLite** for offline access, and the user's information are stored locally using **AsyncStorage**
