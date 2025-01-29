@@ -13,7 +13,7 @@
 - **State Management:** Utilized React Native hooks like `useContext`, `useState`, and `useEffect` to manage application state efficiently.
 - **Full Development Lifecycle:** Designed and implemented the application from the ground up, including integrating APIs, managing local storage, and ensuring a seamless user experience.
 
-## Technologies Used
+## Technologies Used:
 - **Programming Languages:** JavaScript
 - **Frameworks & Libraries:** React Native, React Navigation
 - **Data Storage:** 
@@ -28,7 +28,7 @@
   - **Expo:** Used for development, testing, and running the app on both iOS and Android platforms.
   - **Visual Studio Code:** Primary code editor with extensions for React Native development.
 
-## Skills Demonstrated
+## Skills:
 - **Database Management:** Overcame initial challenges with **SQLite** and **AsyncStorage** by learning database syntax and understanding how data is stored and retrieved.
 - **State Management Across Screens:** Implemented **useContext** to share and update state between different screens.
 - **API Integration:** Learned to fetch data from REST APIs and process JSON responses.
