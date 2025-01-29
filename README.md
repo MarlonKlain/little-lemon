@@ -9,8 +9,8 @@
 ## App Preview  
 <table>
   <tr>
-    <td><img src="app/assets/home-screen.jpg" alt="Login Screen" width="200"/></td>
-    <td><img src="app/assets/login-screen.jpg" alt="Menu Screen" width="200"/></td>
+    <td><img src="app/assets/login-screen.jpg" alt="Login Screen" width="200"/></td>
+    <td><img src="app/assets/home-screen.jpg" alt="Home Screen" width="200"/></td>
     <td><img src="app/assets/profile-screen.jpg" alt="Profile Screen" width="200"/></td>
   </tr>
 </table>
