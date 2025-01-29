@@ -8,7 +8,7 @@ import { MaskedTextInput } from 'react-native-mask-text';
 import * as ImagePicker from 'expo-image-picker';
 
 const Profile = () =>{
-    const {user, changeLogin, changeFirstName, changeEmail} = useContext(UserContext)
+    const {user, changeLogin, updateUser} = useContext(UserContext)
     const [cbOrderStatus, setOrderStatus] = useState(false)
     const [cbPasswordChanges, setPasswordChanges] = useState(false)
     const [cbSpecialOffers, setSpecialOffers] = useState(false)
@@ -79,9 +79,13 @@ const Profile = () =>{
                 .then(function (res) {
                     setUserObject(JSON.parse(res))
                     const objectTest = JSON.parse(res)
-                    changeFirstName(objectTest.firstName)
+                    //context
+                    updateUser({
+                        firstName: objectTest.firstName,
+                        email: objectTest.email,
+                      });
+
                     setLastName(objectTest.lastName)
-                    changeEmail(objectTest.email)
                     setPhone(objectTest.phone)
                     setOrderStatus(objectTest.bdCbOrderStatus)
                     setPasswordChanges(objectTest.bdCbPasswordChanges)

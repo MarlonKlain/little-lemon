@@ -42,6 +42,12 @@ const initializeState = {
                     phone: action.payload.phone
                 }
             }
+            case 'update-user': {
+                return {
+                  ...user,
+                  ...action.payload, // Update all provided fields
+                };
+              }
         }
 }
 
@@ -77,9 +83,15 @@ function UserProvider({children}){
             type: 'update-phone-number', payload: {phone}
         });
     }
+    function updateUser(newData) {
+        dispatch({
+          type: 'update-user',
+          payload: newData, // Pass the full object with updated values
+        });
+      }
 
     return(
-        <UserContext.Provider value={{user, changeLogin, changeFirstName, changeEmail, changeLastName, changePhone}}>
+        <UserContext.Provider value={{user, changeLogin, changeFirstName, changeEmail, changeLastName, changePhone, updateUser}}>
             {children}
         </UserContext.Provider>
     )

@@ -48,10 +48,8 @@ function HeaderProfilePicture({ profilePicture, firstName, lastName }) {
 
 const RootNavigator = () => {
     //Destructuring the userContext
-    const {user, changeLogin, changeFirstName, changeLastName} = useContext(UserContext)
+    const {user, updateUser, changeLogin} = useContext(UserContext)
     const [profilePicture, setProfilePicture] = useState(null)
-    const [firstName, setFirstName] = useState(null)
-    const [lastName, setLastName] = useState(null)
     
     useEffect(() => {
         // calling the getData async method to get verify if the user has logged in previously, this value is stored locally
@@ -61,17 +59,19 @@ const RootNavigator = () => {
             .then((res) => {
                 let response = JSON.parse(res)
                 if(response != null){
-                    changeLogin(response.login ? response.login : false)
-                    setProfilePicture(response.profilePicture)  
-                    changeFirstName(response.firstName) 
-                    changeLastName(response.lastName)                 
+                    updateUser({
+                        login: response.login || false,
+                        firstName: response.firstName,
+                        lastName: response.lastName,
+                      });
+                      setProfilePicture(response.profilePicture)      
                 } else {
                     changeLogin(false)  
                 }
             })
             .catch(err => console.error("Erro ao buscar login:", err));
 
-    }, [profilePicture, changeLastName]);
+    }, [profilePicture, updateUser]);
 
     // while the login validation is not complete, will be showed the splashscreen
     if (user.login === null) {
