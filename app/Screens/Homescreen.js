@@ -105,7 +105,7 @@ const Homescreen = () => {
         checkDatabase()
     }, [])
 
-    //Every time the user change the state of "serch", a useState hook that receives the name from the menu item that he would like to search, the screen will be re-render
+    //Every time the user change the state of "search", a useState hook that receives the name from the menu item that he would like to search, the screen will be re-render
     useEffect(() => {
         listSearch(search)
     }, [search])
